@@ -2888,6 +2888,10 @@ get_file(cupsd_client_t *con,		/* I  - Client connection */
 
     return (NULL);
   }
+  else if (!strncmp(con->uri, "/http/", 6) && !strchr(con->uri + 6, '/'))
+  {
+    snprintf(filename, len, "%s/http/%s", CacheDir, con->uri + 5);
+  }
   else if (!strncmp(con->uri, "/rss/", 5) && !strchr(con->uri + 5, '/'))
   {
     snprintf(filename, len, "%s/rss/%s", CacheDir, con->uri + 5);
@@ -2917,6 +2921,7 @@ get_file(cupsd_client_t *con,		/* I  - Client connection */
       strncmp(con->uri, "/icons/", 7) &&
       strncmp(con->uri, "/ppd/", 5) &&
       strncmp(con->uri, "/rss/", 5) &&
+      strncmp(con->uri, "/http/", 6) &&
       strncmp(con->uri, "/strings/", 9) &&
       strncmp(con->uri, "/admin/conf/", 12) &&
       strncmp(con->uri, "/admin/log/", 11))

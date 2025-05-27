@@ -1160,6 +1160,7 @@ cupsdReadConfiguration(void)
   */
 
   snprintf(temp, sizeof(temp), "%s/rss", CacheDir);
+  snprintf(temp, sizeof(temp), "%s/http", CacheDir);
 
   if ((cupsdCheckPermissions(RequestRoot, NULL, 0710, RunUser,
 			     Group, 1, 1) < 0 ||
