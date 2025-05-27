@@ -139,6 +139,11 @@ text/css			css
 
 application/rss+xml		rss
 
+#
+# HTTP feed type...
+#
+
+application/json		http
 
 ########################################################################
 #
