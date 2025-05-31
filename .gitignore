@@ -93,6 +93,7 @@
 /monitor/bcp
 /monitor/tbcp
 /notifier/dbus
+/notifier/http
 /notifier/mailto
 /notifier/rss
 /notifier/testnotify

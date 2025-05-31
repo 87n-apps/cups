@@ -399,10 +399,10 @@ cupsdAddSubscription(
   cupsRWUnlock(&SubscriptionsLock);
 
  /*
-  * For RSS subscriptions, run the notifier immediately...
+  * For RSS/HTTP subscriptions, run the notifier immediately...
   */
 
-  if (uri && !strncmp(uri, "rss:", 4))
+  if (uri && (!strncmp(uri, "rss:", 4) || !strncmp(uri, "http:", 5)))
     cupsd_start_notifier(temp);
 
   return (temp);

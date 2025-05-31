@@ -378,6 +378,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %dir /var/cache/cups
 %attr(0775,root,sys) %dir /var/cache/cups/rss
+%attr(0775,root,sys) %dir /var/cache/cups/http
 %dir /var/log/cups
 %dir /var/run/cups
 %attr(0711,lp,sys) %dir /var/run/cups/certs

@@ -47,7 +47,7 @@ static void	authenticate_job(cupsd_client_t *con, ipp_attribute_t *uri);
 static void	cancel_all_jobs(cupsd_client_t *con, ipp_attribute_t *uri);
 static void	cancel_job(cupsd_client_t *con, ipp_attribute_t *uri);
 static void	cancel_subscription(cupsd_client_t *con, int id);
-static int	check_rss_recipient(const char *recipient);
+static int	check_rss_http_recipient(const char *recipient);
 static int	check_quotas(cupsd_client_t *con, cupsd_printer_t *p);
 static void	close_job(cupsd_client_t *con, ipp_attribute_t *uri);
 static void	copy_attrs(ipp_t *to, ipp_t *from, cups_array_t *ra,
@@ -1912,7 +1912,7 @@ add_job_subscriptions(
 	  return;
 	}
 
-        if (!strcmp(scheme, "rss") && !check_rss_recipient(recipient))
+        if ((!strcmp(scheme, "rss") || !strcmp(scheme, "http")) && !check_rss_http_recipient(recipient))
 	{
           send_ipp_status(con, IPP_STATUS_ERROR_NOT_POSSIBLE,
 	                  _("notify-recipient-uri URI \"%s\" is already used."),
@@ -3496,11 +3496,11 @@ cancel_subscription(
 
 
 /*
- * 'check_rss_recipient()' - Check that we do not have a duplicate RSS feed URI.
+ * 'check_rss_http_recipient()' - Check that we do not have a duplicate RSS/HTTP feed URI.
  */
 
 static int				/* O - 1 if OK, 0 if not */
-check_rss_recipient(
+check_rss_http_recipient(
     const char *recipient)		/* I - Recipient URI */
 {
   cupsd_subscription_t	*sub;		/* Current subscription */
@@ -5843,7 +5843,7 @@ create_subscriptions(
 	  return;
 	}
 
-        if (!strcmp(scheme, "rss") && !check_rss_recipient(recipient))
+        if ((!strcmp(scheme, "rss") || !strcmp(scheme, "http")) && !check_rss_http_recipient(recipient))
 	{
           send_ipp_status(con, IPP_STATUS_ERROR_NOT_POSSIBLE,
 	                  _("notify-recipient-uri URI \"%s\" is already used."),

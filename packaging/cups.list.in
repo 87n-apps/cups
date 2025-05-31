@@ -365,6 +365,7 @@ d 0710 root $CUPS_GROUP $REQUESTS -
 d 1770 root $CUPS_GROUP $REQUESTS/tmp -
 d 0775 root $CUPS_GROUP $CACHEDIR -
 d 0775 root $CUPS_GROUP $CACHEDIR/rss -
+d 0775 root $CUPS_GROUP $CACHEDIR/http -
 #d 0755 root $CUPS_GROUP $CACHEDIR/ppd -
 %system !darwin
 d 0755 root $CUPS_GROUP $STATEDIR -
