@@ -14,7 +14,7 @@
 #include <cups/json.h>
 
 /**
-  * Stuctures
+  * Structures
   */
 
 typedef struct _cups_http_s /* Http message data */
@@ -131,7 +131,7 @@ main(int  argc,     /* I - Number of command line arguments */
     }
   }
 
-  http_msg_array = cupsArrayNew((cups_array_func_t)compare_msg, NULL);
+  http_msg_array = cupsArrayNew3((cups_array_func_t)compare_msg, NULL, NULL, 0, NULL, NULL);
 
   if (host[0])
   {
@@ -147,7 +147,7 @@ main(int  argc,     /* I - Number of command line arguments */
     cupsSetPasswordCB(password_cb);
     cupsSetUser(username);
 
-    if ((fd = cupsTempFd(filename, sizeof(filename))) < 0)
+    if ((fd = cupsCreateTempFd(NULL, NULL, filename, sizeof(filename))) < 0)
     {
       fprintf(stderr, "ERROR: http notifier: Could not create temporary file %s: %s\n", filename, strerror(errno));
       return (1);
@@ -168,7 +168,7 @@ main(int  argc,     /* I - Number of command line arguments */
     if (status != HTTP_STATUS_OK && status != HTTP_STATUS_NOT_FOUND)
     {
       fprintf(stderr, "ERROR: http notifier: Unable to GET %s from %s on port %d: %d %s\n",
-              resource, host, port, status, httpStatus(status));
+              resource, host, port, status, httpStatusString(status));
       httpClose(http);
       unlink(filename);
       return (1);
@@ -209,7 +209,7 @@ main(int  argc,     /* I - Number of command line arguments */
 
   load_array(http_msg_array, filename);
 
-  changed = cupsArrayCount(http_msg_array) == 0;
+  changed = cupsArrayGetCount(http_msg_array) == 0;
 
   /**
     * Read events and update the JSON file until no events are left
@@ -233,7 +233,7 @@ main(int  argc,     /* I - Number of command line arguments */
           if ((status = cupsPutFile(http, resource, filename)) != HTTP_STATUS_CREATED)
           {
             fprintf(stderr, "ERROR: http notifier: Unable to PUT %s from %s on port %d: %d %s\n",
-                    resource, host, port, status, httpStatus(status));
+                    resource, host, port, status, httpStatusString(status));
           }
         }
         else
@@ -341,9 +341,9 @@ main(int  argc,     /* I - Number of command line arguments */
         * Trimming array as needed
         */
 
-      while (cupsArrayCount(http_msg_array) > max_events)
+      while (cupsArrayGetCount(http_msg_array) > max_events)
       {
-        http_msg = cupsArrayFirst(http_msg_array);
+        http_msg = cupsArrayGetFirst(http_msg_array);
         cupsArrayRemove(http_msg_array, http_msg);
         delete_http_msg(http_msg);
       }
@@ -577,9 +577,9 @@ save_json(cups_array_t *http_arr, /* I - http message array */
   json_root    = cupsJSONNew(NULL, NULL, CUPS_JTYPE_OBJECT);
   json_events  = cupsJSONNew(json_root, cupsJSONNewKey(json_root, NULL, "events"), CUPS_JTYPE_ARRAY);
 
-  for (current = (_cups_http_t *)cupsArrayLast(http_arr);
+  for (current = (_cups_http_t *)cupsArrayGetLast(http_arr);
        current;
-       current = (_cups_http_t *)cupsArrayPrev(http_arr))
+       current = (_cups_http_t *)cupsArrayGetPrev(http_arr))
   {
     if ((event_obj = cupsJSONNew(json_events, NULL, CUPS_JTYPE_OBJECT)) == NULL)
     {
