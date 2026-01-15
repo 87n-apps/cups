@@ -11,9 +11,9 @@
 include ../Makedefs
 
 
-NOTIFIERS =	$(DBUS_NOTIFIER) mailto rss
+NOTIFIERS =	$(DBUS_NOTIFIER) http mailto rss
 TARGETS =	$(NOTIFIERS) testnotify
-OBJS	=	dbus.o mailto.o rss.o testnotify.o
+OBJS	=	dbus.o http.o mailto.o rss.o testnotify.o
 
 
 #
@@ -58,6 +58,7 @@ install:	all install-data install-headers install-libs install-exec
 
 install-data:
 	$(INSTALL_DIR) -m 775 -g $(CUPS_GROUP) $(CACHEDIR)/rss
+	$(INSTALL_DIR) -m 775 -g $(CUPS_GROUP) $(CACHEDIR)/http
 
 
 #
@@ -104,6 +105,7 @@ uninstall:
 	-$(RMDIR) $(SERVERBIN)/notifier
 	-$(RMDIR) $(SERVERBIN)
 	-$(RMDIR) $(CACHEDIR)/rss
+	-$(RMDIR) $(CACHEDIR)/http
 
 
 #
@@ -121,6 +123,16 @@ depend:
 dbus:	dbus.o ../cups/$(LIBCUPS)
 	echo Linking $@...
 	$(LD_CC) $(ALL_LDFLAGS) -o dbus dbus.o $(DBUS_NOTIFIERLIBS) $(LINKCUPS)
+	$(CODE_SIGN) -s "$(CODE_SIGN_IDENTITY)" $@
+
+
+#
+# http
+#
+
+http:	http.o ../cups/$(LIBCUPS)
+	echo Linking $@...
+	$(LD_CC) $(ALL_LDFLAGS) -o http http.o $(LINKCUPS)
 	$(CODE_SIGN) -s "$(CODE_SIGN_IDENTITY)" $@
 
 

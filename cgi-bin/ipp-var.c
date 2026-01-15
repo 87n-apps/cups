@@ -1102,10 +1102,10 @@ cgiSetIPPObjectVars(
                       scheme, sizeof(scheme), userpass, sizeof(userpass),
 		      host, sizeof(host), &port, resource, sizeof(resource));
 
-      if (!strcmp(scheme, "rss"))
+      if (!strcmp(scheme, "rss") || !strcmp(scheme, "http"))
       {
        /*
-        * RSS notification...
+        * HTTP/RSS notification...
 	*/
 
         if ((options = strchr(resource, '?')) != NULL)
@@ -1126,9 +1126,15 @@ cgiSetIPPObjectVars(
 	 /*
 	  * Link to local feed...
 	  */
-
-	  snprintf(uri, sizeof(uri), "/rss%s", resource);
-          cupsCopyString(name, resource + 1, sizeof(name));
+    if (!strcmp(scheme, "rss"))
+    {
+      snprintf(uri, sizeof(uri), "/rss%s", resource);
+    }
+    else
+    {
+      snprintf(uri, sizeof(uri), "/http%s", resource);
+    }
+    cupsCopyString(name, resource + 1, sizeof(name));
 	}
       }
       else
